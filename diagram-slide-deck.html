@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MySTEMGrowth Presentation Deck</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-color: #0b2545;
+            --accent-color: #3cb371;
+            --text-dark: #07121f;
+            --light-tint: #e3f3eb;
+            --glow-one-scale: 1;
+            --glow-two-scale: 1;
+            --ring-one-scale: 1;
+            --ring-two-scale: 1;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Nimbus Sans", "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top right, rgba(60, 179, 113, 0.55), transparent 45%),
+                        radial-gradient(circle at bottom left, rgba(11, 37, 69, 0.65), transparent 55%),
+                        linear-gradient(125deg, var(--primary-color) 0%, #142f50 38%, #1a3c5f 65%, #0b2545 100%);
+            color: var(--light-tint);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 16px;
+            perspective: 2000px;
+        }
+
+        .deck {
+            width: min(96vw, 1400px);
+            height: min(92vh, 820px);
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            border-radius: 38px;
+            background: linear-gradient(140deg, rgba(255, 255, 255, 0.14) 0%, rgba(7, 18, 31, 0.12) 48%, rgba(0, 0, 0, 0) 100%);
+            border: 1px solid rgba(227, 243, 235, 0.22);
+            backdrop-filter: blur(16px);
+            padding: min(8vw, 120px) min(7vw, 110px);
+            box-shadow: 0 40px 90px rgba(7, 18, 31, 0.42);
+            opacity: 0;
+            transform: translateY(40px) scale(0.96);
+            transition: opacity 0.6s ease, transform 0.75s cubic-bezier(0.19, 1, 0.22, 1);
+            display: flex;
+            pointer-events: none;
+            flex-direction: column;
+            gap: 28px;
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+        }
+
+        .slide::before,
+        .slide::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            background: var(--accent-color);
+            filter: blur(110px);
+            opacity: 0.28;
+            z-index: -1;
+        }
+
+        .slide::before {
+            width: 320px;
+            height: 320px;
+            top: -160px;
+            right: -120px;
+        }
+
+        .slide::after {
+            width: 260px;
+            height: 260px;
+            bottom: -120px;
+            left: -80px;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .slide.entering {
+            opacity: 0;
+            transform: translateY(60px) scale(0.94);
+        }
+
+        .slide.exiting {
+            opacity: 0;
+            transform: translateY(-40px) scale(1.02);
+        }
+
+        .slide.entering.forward {
+            transform: translate3d(80px, 30px, 0) rotateY(-12deg) scale(0.9);
+        }
+
+        .slide.entering.backward {
+            transform: translate3d(-80px, 30px, 0) rotateY(12deg) scale(0.9);
+        }
+
+        .slide.exiting.forward {
+            transform: translate3d(-80px, -30px, 0) rotateY(8deg) scale(1.05);
+        }
+
+        .slide.exiting.backward {
+            transform: translate3d(80px, -30px, 0) rotateY(-8deg) scale(1.05);
+        }
+
+        .slide h1,
+        .slide h2 {
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .slide h1 {
+            font-size: clamp(3rem, 5vw, 4.6rem);
+            text-transform: uppercase;
+        }
+
+        .slide h2 {
+            font-size: clamp(2rem, 3.4vw, 3rem);
+            color: #cdefdf;
+        }
+
+        .lead {
+            font-size: clamp(1.3rem, 2vw, 1.7rem);
+            max-width: none;
+            width: 100%;
+            line-height: 1.6;
+            color: rgba(227, 243, 235, 0.9);
+        }
+
+        .list {
+            padding-left: 1.2em;
+            margin: 0;
+            display: grid;
+            gap: 10px;
+            color: rgba(227, 243, 235, 0.9);
+            font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            background: rgba(227, 243, 235, 0.12);
+            border: 1px solid rgba(227, 243, 235, 0.2);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .cover-branding {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 18px;
+        }
+
+        .cover-logo {
+            width: min(1100px, 100vw);
+            height: auto;
+            filter: drop-shadow(0 16px 36px rgba(7, 18, 31, 0.4));
+        }
+
+        .cover-branding .lead {
+            font-size: clamp(2rem, 4vw, 3.4rem);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .team-roster {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px 26px;
+            color: rgba(227, 243, 235, 0.9);
+            font-size: clamp(1rem, 1.6vw, 1.3rem);
+            letter-spacing: 0.02em;
+        }
+
+        .team-roster li {
+            font-weight: 500;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 32px;
+            margin-top: 18px;
+        }
+
+        .metric-card {
+            background: rgba(227, 243, 235, 0.08);
+            border-radius: 20px;
+            padding: 18px 20px;
+            border: 1px solid rgba(227, 243, 235, 0.18);
+            box-shadow: inset 0 0 0 1px rgba(227, 243, 235, 0.08);
+        }
+
+        .metric-card .value {
+            font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+            font-weight: 700;
+            color: #f2fff7;
+            margin-bottom: 8px;
+        }
+
+        .metric-card .label {
+            font-size: 1rem;
+            letter-spacing: 0.04em;
+            color: rgba(227, 243, 235, 0.7);
+        }
+
+        .deck .glow,
+        .deck .accent-ring {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            transform-origin: center;
+        }
+
+        .deck .glow {
+            filter: blur(120px);
+            opacity: 0.32;
+        }
+
+        .deck .glow.one {
+            width: 420px;
+            height: 420px;
+            top: -150px;
+            right: -120px;
+            background: var(--accent-color);
+            transform: scale(var(--glow-one-scale));
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.6s ease;
+        }
+
+        .deck .glow.two {
+            width: 360px;
+            height: 360px;
+            bottom: -160px;
+            left: -100px;
+            background: rgba(227, 243, 235, 0.85);
+            transform: scale(var(--glow-two-scale));
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.6s ease;
+        }
+
+        .deck .accent-ring {
+            border: 2px solid rgba(227, 243, 235, 0.25);
+            box-shadow: 0 0 0 28px rgba(60, 179, 113, 0.08);
+        }
+
+        .deck .accent-ring.one {
+            width: 240px;
+            height: 240px;
+            bottom: 140px;
+            right: 160px;
+            transform: scale(var(--ring-one-scale));
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.6s ease;
+        }
+
+        .deck .accent-ring.two {
+            width: 160px;
+            height: 160px;
+            top: 90px;
+            left: -30px;
+            transform: scale(var(--ring-two-scale));
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.6s ease;
+        }
+
+        .matrix-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 18px;
+            align-items: stretch;
+        }
+
+        .matrix-col {
+            flex: 1 1 380px;
+            min-width: 0;
+        }
+
+        .matrix-details {
+            flex: 1 1 280px;
+            min-width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            color: rgba(245, 249, 255, 0.82);
+        }
+
+        .matrix-details h3 {
+            margin: 0;
+            font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+            letter-spacing: 0.03em;
+            color: #f5f9ff;
+        }
+
+        .matrix-list {
+            margin: 0;
+            padding-left: 1.2em;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: clamp(1rem, 1.6vw, 1.3rem);
+            color: rgba(245, 249, 255, 0.82);
+        }
+
+        .matrix-card {
+            width: 100%;
+            margin-top: 8px;
+            background: rgba(12, 24, 46, 0.82);
+            border: 1px solid rgba(60, 179, 113, 0.24);
+            border-radius: 18px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 22px 42px rgba(4, 11, 20, 0.42);
+            overflow: hidden;
+        }
+
+        .matrix-scroll {
+            width: 100%;
+            overflow: auto;
+            padding: 10px clamp(6px, 1.5vw, 14px);
+        }
+
+        .matrix {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            table-layout: fixed;
+            font-size: clamp(0.65rem, 1vw, 0.8rem);
+        }
+
+        .matrix thead th {
+            text-transform: uppercase;
+            letter-spacing: 0.11em;
+            padding: 10px clamp(6px, 1vw, 12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(245, 249, 255, 0.82);
+            background: linear-gradient(180deg, rgba(60, 179, 113, 0.12), transparent);
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .matrix tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .matrix tbody td {
+            padding: 10px clamp(6px, 1vw, 12px);
+            text-align: center;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .matrix tbody td:first-child {
+            text-align: left;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .weight-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(60, 179, 113, 0.2);
+            color: #3cb371;
+        }
+
+        .score-cell {
+            font-weight: 600;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #f5f9ff;
+        }
+
+        .score-cell[data-score="5"] { background: linear-gradient(135deg, rgba(60, 179, 113, 0.68), rgba(60, 179, 113, 0.32)); }
+        .score-cell[data-score="4"] { background: linear-gradient(135deg, rgba(60, 179, 113, 0.3), rgba(60, 179, 113, 0.12)); }
+        .score-cell[data-score="3"] { background: linear-gradient(135deg, rgba(255, 193, 7, 0.28), rgba(255, 193, 7, 0.1)); }
+        .score-cell[data-score="2"] { background: linear-gradient(135deg, rgba(255, 87, 34, 0.28), rgba(255, 87, 34, 0.1)); }
+
+        .score-bar {
+            position: relative;
+            height: 9px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .score-bar::after {
+            content: attr(data-score);
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 9px;
+            font-size: 0.65rem;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            color: rgba(10, 18, 28, 0.85);
+            background: linear-gradient(135deg, rgba(60, 179, 113, 0.78), rgba(56, 167, 203, 0.72));
+            width: calc((var(--score) / 5) * 100%);
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 12px clamp(10px, 2vw, 20px) 14px;
+            background: rgba(0, 0, 0, 0.22);
+            color: rgba(245, 249, 255, 0.74);
+            font-size: 0.78rem;
+            line-height: 1.6;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .legend-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-swatch.green {
+            background: linear-gradient(135deg, rgba(60, 179, 113, 0.78), rgba(60, 179, 113, 0.35));
+        }
+
+        .legend-swatch.gold {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.7), rgba(255, 193, 7, 0.2));
+        }
+
+        .legend-swatch.orange {
+            background: linear-gradient(135deg, rgba(255, 87, 34, 0.7), rgba(255, 87, 34, 0.2));
+        }
+
+        @media (max-width: 768px) {
+            .deck {
+                height: auto;
+            }
+
+            .slide {
+                position: relative;
+                padding: 48px 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="deck">
+        <span class="glow one"></span>
+        <span class="glow two"></span>
+        <span class="accent-ring one"></span>
+        <span class="accent-ring two"></span>
+
+        <section class="slide active" data-index="1">
+            <div class="cover-branding">
+                <span class="badge">Lightning Talk • Prototyping</span>
+                <img class="cover-logo" src="Slide title.png" alt="MySTEMGrowth logo">
+                <p class="lead">Prototyping</p>
+                <ul class="team-roster">
+                    <li>Nina Gadelha</li>
+                    <li>Caleb Hemmestad</li>
+                    <li>Ethan Buenting</li>
+                    <li>Ethan Van Caster</li>
+                    <li>Sam Craft</li>
+                    <li>Ryan Mamrot</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="slide" data-index="2">
+            <span class="badge">Program Context</span>
+            <h2>What Is the MySTEMGrowth Survey?</h2>
+            <p class="lead">
+                A before-and-after survey that helps undergraduate researchers reflect on growth throughout their program experience.
+            </p>
+            <ul class="list">
+                <li>Captures change across Civic Engagement, STEM Interests, Self-Efficacy, and Outcome Expectations.</li>
+                <li>Students compare pre/post results to understand how the program shaped their trajectory.</li>
+                <li>Provides actionable feedback to participants and program leadership.</li>
+            </ul>
+        </section>
+
+        <section class="slide" data-index="3">
+            <span class="badge">Prototyping Questions</span>
+            <h2>Guiding the Prototype</h2>
+            <ul class="list">
+                <li><strong>Goal:</strong> Clarify the design and align it to client expectations through an iterative prototype.</li>
+                <li><strong>Form:</strong> A functional skeleton website that isolates subsystems while showcasing core flows.</li>
+                <li><strong>Build:</strong> HTML/CSS and JavaScript supported by React, Chakra UI, bcrypt, and companion libraries.</li>
+                <li><strong>Learn:</strong> Present to clients, collect feedback, refine design, and loop quickly.</li>
+            </ul>
+        </section>
+
+        <section class="slide" data-index="4">
+            <span class="badge">Prototyping Purposes</span>
+            <h2>Refinement & Communication</h2>
+            <ul class="list">
+                <li><strong>Refinement:</strong> Continuously improve the experience to match client vision.</li>
+                <li>Create → Present → Gather Feedback → Iterate — a cycle baked into our process.</li>
+                <li><strong>Communication:</strong> Tangible demos help stakeholders pinpoint the updates they need next.</li>
+            </ul>
+        </section>
+
+        <section class="slide" data-index="5">
+            <span class="badge">Prototyping Purposes (cont.)</span>
+            <h2>Exploration & Active Learning</h2>
+            <ul class="list">
+                <li><strong>Exploration:</strong> Safe space to surface mistakes and breakthroughs early in the build.</li>
+                <li><strong>Active Learning:</strong> Walkthroughs from client and participant viewpoints ensure the app is intuitive and reliable.</li>
+                <li>Validates usability while confirming we capture the required data for each persona.</li>
+            </ul>
+        </section>
+
+        <section class="slide" data-index="6">
+            <span class="badge">Adopted Strategy</span>
+            <h2>Isolating Subsystems</h2>
+            <ul class="list">
+                <li><strong>What:</strong> Standalone prototypes of critical features and user journeys.</li>
+                <li><strong>Why:</strong> Focus effort on specific components we inherited or need to improve.</li>
+                <li><strong>How:</strong> Build a demo UI, diagram flows, and validate user interactions before full integration.</li>
+            </ul>
+        </section>
+
+        <section class="slide" data-index="7">
+            <span class="badge">Prototype Examples</span>
+            <h2>Touchpoints Across the Stack</h2>
+            <ul class="list">
+                <li><strong>Frontend:</strong> Caleb’s demo UI mocks the student experience in desktop views.</li>
+                <li><strong>Backend:</strong> Component diagrams outline survey pipelines and program management.</li>
+                <li><strong>Cloud:</strong> DigitalOcean provisioning concepts show hosting direction.</li>
+                <li><strong>Security:</strong> bcrypt-based hashing workflow protects credentials with salts.</li>
+            </ul>
+        </section>
+
+        <section class="slide" data-index="8">
+            <span class="badge">Security Enhancements</span>
+            <h2>Protecting Students & Data</h2>
+            <p class="lead">Our stack layers modern defenses across authentication, storage, and operational processes.</p>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="value">Bcrypt + Salt</div>
+                    <div class="label">Hashed credentials with rotation-ready configuration for quick security response.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="value">Role-Aware APIs</div>
+                    <div class="label">JWT-based middleware scopes routes per persona and enforces least-privilege access.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="value">Encrypted Stores</div>
+                    <div class="label">At-rest encryption for survey submissions plus audited object storage for exports.</div>
+                </div>
+            </div>
+            <ul class="list">
+                <li><strong>Credential hygiene:</strong> Bcrypt (12+ rounds) with unique salt per user and planned refresh schedules.</li>
+                <li><strong>Session posture:</strong> Short-lived JWTs, sliding refresh tokens, and centralized logout hooks.</li>
+                <li><strong>Data governance:</strong> PII tokenization in transit; audit logging for downloads & role escalations.</li>
+                <li><strong>Operational safeguards:</strong> Infrastructure-as-code for secrets rotation and environment parity.</li>
+            </ul>
+        </section>
+
+        <section class="slide" data-index="9">
+            <span class="badge">Program Coordinator Prototype</span>
+            <h2>Dashboard Highlights</h2>
+            <p class="lead">A tailored home view that keeps coordinators focused on their cohort’s health and action items.</p>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="value">Live Programs</div>
+                    <div class="label">Quick switcher across assigned cohorts with progress and cadence context.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="value">Survey Tracking</div>
+                    <div class="label">Pre/post completion rates and overdue reminders surfaced up front.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="value">Action Center</div>
+                    <div class="label">Task tiles for rostering, scheduling, and export of feedback packets.</div>
+                </div>
+            </div>
+            <ul class="list">
+                <li><strong>At-a-glance stats:</strong> Key KPIs (response rates, mentor check-ins) presented as cards.</li>
+                <li><strong>Task grid:</strong> Quick buttons to register students, upload results, and message faculty.</li>
+                <li><strong>Announcements panel:</strong> Admin-crafted updates and policy reminders tailored per program.</li>
+                <li><strong>Upcoming timeline:</strong> Calendar snippets calling out due dates and site visits.</li>
+            </ul>
+        </section>
+
+        <section class="slide" data-index="10">
+            <span class="badge">Hosting Strategy</span>
+            <h2>Weighted Decision Matrix</h2>
+            <div class="matrix-flex">
+                <div class="matrix-col">
+                    <div class="matrix-card">
+                        <div class="matrix-scroll">
+                        <table class="matrix">
+                          <thead>
+                            <tr>
+                              <th>Criteria</th>
+                              <th>Weight</th>
+                              <th>AWS</th>
+                              <th>DigitalOcean</th>
+                              <th>GCP</th>
+                              <th>Azure</th>
+                              <th>Heroku/Vercel</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Cost</td>
+                              <td><span class="weight-pill">0.25</span></td>
+                              <td class="score-cell" data-score="2">2</td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="3">3</td>
+                              <td class="score-cell" data-score="3">3</td>
+                              <td class="score-cell" data-score="4">4</td>
+                            </tr>
+                            <tr>
+                              <td>Ease of Setup</td>
+                              <td><span class="weight-pill">0.20</span></td>
+                              <td class="score-cell" data-score="2">2</td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="3">3</td>
+                              <td class="score-cell" data-score="3">3</td>
+                              <td class="score-cell" data-score="5">5</td>
+                            </tr>
+                            <tr>
+                              <td>Integration w/ Stack</td>
+                              <td><span class="weight-pill">0.20</span></td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="4">4</td>
+                              <td class="score-cell" data-score="3">3</td>
+                              <td class="score-cell" data-score="3">3</td>
+                            </tr>
+                            <tr>
+                              <td>Security</td>
+                              <td><span class="weight-pill">0.20</span></td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="4">4</td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="3">3</td>
+                            </tr>
+                            <tr>
+                              <td>Scalability</td>
+                              <td><span class="weight-pill">0.15</span></td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="4">4</td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="5">5</td>
+                              <td class="score-cell" data-score="3">3</td>
+                            </tr>
+                            <tr class="totals-row">
+                              <td>Weighted Score</td>
+                              <td></td>
+                              <td>
+                                <div class="score-bar" style="--score:3.7" data-score="3.7"></div>
+                              </td>
+                              <td>
+                                <div class="score-bar" style="--score:4.7" data-score="4.7"></div>
+                              </td>
+                              <td>
+                                <div class="score-bar" style="--score:4.2" data-score="4.2"></div>
+                              </td>
+                              <td>
+                                <div class="score-bar" style="--score:4.0" data-score="4.0"></div>
+                              </td>
+                              <td>
+                                <div class="score-bar" style="--score:3.8" data-score="3.8"></div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        </div>
+
+                        <div class="legend">
+                          <div>Weights: Cost 25%, Ease 20%, Integration 20%, Security 20%, Scalability 15%. Weighted score = Σ(score × weight).</div>
+                          <div class="legend-item">
+                            <span class="legend-swatch green"></span>
+                            <span>Outstanding (4–5)</span>
+                          </div>
+                          <div class="legend-item">
+                            <span class="legend-swatch gold"></span>
+                            <span>Competitive (3)</span>
+                          </div>
+                          <div class="legend-item">
+                            <span class="legend-swatch orange"></span>
+                            <span>Needs Work (1–2)</span>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="matrix-details">
+                    <h3>Key Takeaways</h3>
+                    <ul class="matrix-list">
+                        <li><strong>DigitalOcean leads</strong> with 5/5 in cost &amp; setup plus solid marks across the board.</li>
+                        <li><strong>AWS excels</strong> in integration and security but carries higher cost and setup overhead.</li>
+                        <li><strong>Heroku/Vercel</strong> remain attractive for rapid prototypes yet trail in long-term integration control.</li>
+                        <li>GCP and Azure provide enterprise scalability with slightly higher operational overhead.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" data-index="11">
+            <span class="badge">Wrap-up</span>
+            <h2>Thank You!</h2>
+            <p class="lead">
+                Questions? We’re ready to dive deeper into the prototype or the MySTEMGrowth vision.
+            </p>
+        </section>
+    </div>
+
+    <script>
+        (function () {
+            var deck = document.querySelector('.deck');
+            var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+            var current = 0;
+            var isAnimating = false;
+
+            var circleStates = [
+                { glowOne: 1.0, glowTwo: 1.0, ringOne: 1.05, ringTwo: 1.0 },
+                { glowOne: 1.18, glowTwo: 0.88, ringOne: 1.22, ringTwo: 0.96 },
+                { glowOne: 1.3, glowTwo: 0.82, ringOne: 1.34, ringTwo: 0.9 },
+                { glowOne: 1.12, glowTwo: 1.08, ringOne: 1.18, ringTwo: 1.04 },
+                { glowOne: 0.94, glowTwo: 1.26, ringOne: 0.98, ringTwo: 1.22 },
+                { glowOne: 0.88, glowTwo: 1.34, ringOne: 0.92, ringTwo: 1.28 },
+                { glowOne: 1.06, glowTwo: 1.14, ringOne: 1.1, ringTwo: 1.12 },
+                { glowOne: 0.98, glowTwo: 0.98, ringOne: 1.02, ringTwo: 1.02 },
+                { glowOne: 1.08, glowTwo: 1.18, ringOne: 1.12, ringTwo: 1.16 },
+                { glowOne: 1.12, glowTwo: 0.92, ringOne: 1.18, ringTwo: 0.94 },
+                { glowOne: 1.0, glowTwo: 1.0, ringOne: 1.05, ringTwo: 1.0 }
+            ];
+
+            function applyCircleState(index) {
+                var state = circleStates[index] || circleStates[0];
+                deck.style.setProperty('--glow-one-scale', state.glowOne);
+                deck.style.setProperty('--glow-two-scale', state.glowTwo);
+                deck.style.setProperty('--ring-one-scale', state.ringOne);
+                deck.style.setProperty('--ring-two-scale', state.ringTwo);
+            }
+
+            function updateSlide(newIndex) {
+                if (isAnimating || newIndex < 0 || newIndex >= slides.length || newIndex === current) {
+                    return;
+                }
+
+                isAnimating = true;
+                var direction = newIndex > current ? 'forward' : 'backward';
+                var outgoing = slides[current];
+                var incoming = slides[newIndex];
+
+                outgoing.classList.remove('active');
+                outgoing.classList.add('exiting', direction);
+
+                incoming.classList.add('entering', direction);
+                requestAnimationFrame(function () {
+                    incoming.classList.add('active');
+                    incoming.classList.remove('entering');
+                    incoming.classList.remove(direction);
+                });
+
+                setTimeout(function () {
+                    outgoing.classList.remove('exiting');
+                    outgoing.classList.remove(direction);
+                    isAnimating = false;
+                }, 650);
+
+                applyCircleState(newIndex);
+                current = newIndex;
+            }
+
+            applyCircleState(current);
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.code === 'Space') {
+                    event.preventDefault();
+                    updateSlide(current + 1);
+                } else if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+                    event.preventDefault();
+                    updateSlide(current - 1);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
